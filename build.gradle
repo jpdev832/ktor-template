@@ -1,0 +1,18 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+    }
+}
+
+apply plugin: 'application'
+
+group 'ktor-template'
+version '0.0.1'
+
+task stage {
+    dependsOn ":server:installDist"
+}
