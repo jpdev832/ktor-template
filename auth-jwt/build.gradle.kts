@@ -15,6 +15,9 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
+
+    implementation(project(":error"))
+
     implementation("io.ktor:ktor-auth:$ktorVersion")
     implementation("io.ktor:ktor-auth-jwt:$ktorVersion")
 

@@ -21,6 +21,7 @@ dependencies {
 
     // Internal
     implementation(project(":auth-jwt"))
+    implementation(project(":error"))
     implementation(project(":store"))
     implementation(project(":store-postgres"))
 

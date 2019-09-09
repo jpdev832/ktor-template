@@ -19,35 +19,32 @@ fun Route.exampleRoutes() {
     authenticate {
         post("/examples") {
             val example = call.receive<ExampleRequest>()
-            call.respond(service.createExample(example.data))
+            call.respond(HttpStatusCode.OK, service.createExample(example.data))
         }
 
         get("/examples") {
-            call.respond(service.getAllExamples())
+            call.respond(HttpStatusCode.OK, service.getAllExamples())
         }
 
         get("/examples/{id}") {
-            call.authentication.principal<JWTPrincipal>()?.let {
-                //                val id = it.payload.id
-//                val userId = id.toUUID()
-                val exampleId = call.parameters["id"]!!.toUUID()
-                call.respond(service.getExample(exampleId))
-            } ?: call.respond(HttpStatusCode.Unauthorized)
+            val principal = call.authentication.principal<JWTPrincipal>()!!
+//            val id = it.payload.id
+//            val userId = id.toUUID()
+            val exampleId = call.parameters["id"]!!.toUUID()
+            call.respond(HttpStatusCode.OK, service.getExample(exampleId))
         }
 
         put("/examples/{id}") {
-            call.authentication.principal<JWTPrincipal>()?.let {
-                val exampleId = call.parameters["id"]!!.toUUID()
-                val example = call.receive<ExampleRequest>()
-                call.respond(service.updateExample(exampleId, example.data))
-            } ?: call.respond(HttpStatusCode.Unauthorized)
+            val principal = call.authentication.principal<JWTPrincipal>()!!
+            val exampleId = call.parameters["id"]!!.toUUID()
+            val example = call.receive<ExampleRequest>()
+            call.respond(HttpStatusCode.OK, service.updateExample(exampleId, example.data))
         }
 
         delete("/examples/{id}") {
-            call.authentication.principal<JWTPrincipal>()?.let {
-                val exampleId = call.parameters["id"]!!.toUUID()
-                call.respond(service.deleteExample(exampleId))
-            } ?: call.respond(HttpStatusCode.Unauthorized)
+            val principal = call.authentication.principal<JWTPrincipal>()!!
+            val exampleId = call.parameters["id"]!!.toUUID()
+            call.respond(HttpStatusCode.OK, service.deleteExample(exampleId))
         }
     }
 }
