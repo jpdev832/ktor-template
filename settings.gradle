@@ -1,4 +1,6 @@
 rootProject.name = "ktor-template"
 include 'server'
 include 'auth-jwt'
+include 'store'
+include 'store-postgres'
 

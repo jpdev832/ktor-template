@@ -21,6 +21,8 @@ dependencies {
 
     // Internal
     implementation(project(":auth-jwt"))
+    implementation(project(":store"))
+    implementation(project(":store-postgres"))
 
     // Ktor
     implementation("io.ktor:ktor-server-netty:$ktorVersion")

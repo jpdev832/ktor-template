@@ -1,11 +1,14 @@
 package com.staticvillage.ktor
 
 import com.fasterxml.jackson.databind.SerializationFeature
+import com.staticvillage.ktor.store.Store
 import com.staticvillage.ktor.auth.manager.AuthManager
 import com.staticvillage.ktor.controllers.authRoutes
 import com.staticvillage.ktor.controllers.exampleRoutes
 import com.staticvillage.ktor.injection.*
-import com.staticvillage.ktor.repositories.Database
+import com.staticvillage.ktor.repositories.postgres.dao.Examples
+import com.staticvillage.ktor.repositories.postgres.dao.Users
+import com.staticvillage.ktor.store.postgres.postgres
 import io.ktor.application.Application
 import io.ktor.application.install
 import io.ktor.auth.Authentication
@@ -26,9 +29,6 @@ fun Application.module() {
         modules(appComponent)
         properties(
             mapOf(
-                PROPERTY_DB_URL to environment.config.property("ktor.db.url").getString(),
-                PROPERTY_DB_USERNAME to environment.config.property("ktor.db.username").getString(),
-                PROPERTY_DB_PASSWORD to environment.config.property("ktor.db.password").getString(),
                 PROPERTY_AUTH_JWT_AUDIENCE to environment.config.property("ktor.jwt.audience").getString(),
                 PROPERTY_AUTH_JWT_REALM to environment.config.property("ktor.jwt.realm").getString(),
                 PROPERTY_AUTH_JWT_SECRET to environment.config.property("ktor.jwt.secret").getString(),
@@ -40,9 +40,14 @@ fun Application.module() {
 
     val authManager: AuthManager by inject()
 
-    // Move to feature
-    val database: Database by inject()
-    database.connect()
+    install(Store) {
+        postgres(
+            tables = arrayOf(Examples, Users),
+            url = environment.config.property("ktor.db.url").getString(),
+            user = environment.config.property("ktor.db.username").getString(),
+            password = environment.config.property("ktor.db.password").getString()
+        )
+    }
 
     install(Authentication) {
         jwt { authManager.configure(this) }
