@@ -1,17 +1,16 @@
 package com.staticvillage.ktor.auth.service
 
-import arrow.core.Either
-import arrow.core.Try
 import com.staticvillage.ktor.auth.manager.AuthManager
 import com.staticvillage.ktor.auth.model.Token
 import com.staticvillage.ktor.auth.repository.UserRepository
+import com.staticvillage.ktor.error.models.ServerError
+import com.staticvillage.ktor.error.models.ServerErrorItem
 
 class AuthService(
     private val authManager: AuthManager,
     private val userRepository: UserRepository
 ) {
     companion object {
-        const val SIGNUP_ERROR = "Error creating an account"
         const val LOGIN_ERROR = "Error logging into account"
     }
 
@@ -21,21 +20,20 @@ class AuthService(
         password: String,
         firstName: String,
         lastName: String
-    ): Either<String, Token> {
-        return Try {
-            val passwordHash = authManager.passwordHash(password)
-            val userEntity = userRepository.createUser(email, username, passwordHash, firstName, lastName)
-            authManager.makeToken(userEntity!!.id)
-        }.toEither { SIGNUP_ERROR }
+    ): Token {
+        val passwordHash = authManager.passwordHash(password)
+        val userEntity = userRepository.createUser(email, username, passwordHash, firstName, lastName)
+        return authManager.makeToken(userEntity.id)
     }
 
-    fun login(username: String, password: String): Either<String, Token> {
+    fun login(username: String, password: String): Token {
         val passwordHash = authManager.passwordHash(password)
         val userEntity = userRepository.getUserByUsername(username)
-        return if (passwordHash == userEntity?.passwordHash) {
-            Either.right(authManager.makeToken(userEntity.id))
+
+        if (passwordHash == userEntity.passwordHash) {
+            return authManager.makeToken(userEntity.id)
         } else {
-            Either.left(LOGIN_ERROR)
+            throw ServerError(listOf(ServerErrorItem(LOGIN_ERROR)))
         }
     }
 }

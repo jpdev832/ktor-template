@@ -5,6 +5,7 @@ import com.staticvillage.ktor.store.Store
 import com.staticvillage.ktor.auth.manager.AuthManager
 import com.staticvillage.ktor.controllers.authRoutes
 import com.staticvillage.ktor.controllers.exampleRoutes
+import com.staticvillage.ktor.error.ErrorHandler
 import com.staticvillage.ktor.injection.*
 import com.staticvillage.ktor.repositories.postgres.dao.Examples
 import com.staticvillage.ktor.repositories.postgres.dao.Users
@@ -14,6 +15,7 @@ import io.ktor.application.install
 import io.ktor.auth.Authentication
 import io.ktor.auth.jwt.jwt
 import io.ktor.features.ContentNegotiation
+import io.ktor.features.StatusPages
 import io.ktor.jackson.jackson
 import io.ktor.routing.route
 import io.ktor.routing.routing
@@ -57,6 +59,10 @@ fun Application.module() {
         jackson {
             configure(SerializationFeature.INDENT_OUTPUT, true)
         }
+    }
+
+    install(StatusPages) {
+        ErrorHandler().configure(this)
     }
 
     routing {

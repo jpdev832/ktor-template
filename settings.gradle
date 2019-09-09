@@ -3,4 +3,4 @@ include 'server'
 include 'auth-jwt'
 include 'store'
 include 'store-postgres'
-
+include 'error'
