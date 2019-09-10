@@ -4,9 +4,6 @@ plugins {
     id("kotlin")
 }
 
-group = "ktor-template"
-version = "0.0.1"
-
 repositories {
     mavenCentral()
     jcenter()
