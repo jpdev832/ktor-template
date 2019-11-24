@@ -17,8 +17,13 @@ class JwtAuthManager(
     private val salt: String,
     private val validityInMs: Long = 36_000_00L * 24 * 365
 ) : AuthManager {
+    companion object {
+        const val DIGEST_ALGORITHM = "SHA-256"
+        const val TOKEN_SUBJECT = "Authentication"
+    }
+
     @KtorExperimentalAPI
-    private val digester = getDigestFunction("SHA-256", salt)
+    private val digester = getDigestFunction(DIGEST_ALGORITHM, salt)
     private val algorithm: Algorithm = Algorithm.HMAC512(secret)
 
     override fun configure(provider: JWTAuthenticationProvider) {
@@ -46,7 +51,7 @@ class JwtAuthManager(
 
     override fun makeToken(id: UUID): Token {
         val jwtToken = JWT.create()
-            .withSubject("Authentication")
+            .withSubject(TOKEN_SUBJECT)
             .withIssuer(issuer)
             .withAudience(audience)
             .withJWTId(id.toString())

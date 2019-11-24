@@ -18,6 +18,8 @@ dependencies {
 
     // Internal
     implementation(project(":auth-jwt"))
+    implementation(project(":controller:core"))
+    implementation(project(":controller:koin"))
     implementation(project(":error"))
     implementation(project(":store"))
     implementation(project(":store-postgres"))

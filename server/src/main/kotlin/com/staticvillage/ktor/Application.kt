@@ -1,14 +1,15 @@
 package com.staticvillage.ktor
 
 import com.fasterxml.jackson.databind.SerializationFeature
-import com.staticvillage.ktor.store.Store
+import com.jparrish.ktor.controller.ControllerRegistrar
 import com.staticvillage.ktor.auth.manager.AuthManager
-import com.staticvillage.ktor.controllers.authRoutes
-import com.staticvillage.ktor.controllers.exampleRoutes
+import com.staticvillage.ktor.controllers.AuthController
+import com.staticvillage.ktor.controllers.ExampleController
 import com.staticvillage.ktor.error.ErrorHandler
 import com.staticvillage.ktor.injection.*
 import com.staticvillage.ktor.repositories.postgres.dao.Examples
 import com.staticvillage.ktor.repositories.postgres.dao.Users
+import com.staticvillage.ktor.store.Store
 import com.staticvillage.ktor.store.postgres.postgres
 import io.ktor.application.Application
 import io.ktor.application.install
@@ -17,8 +18,6 @@ import io.ktor.auth.jwt.jwt
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.StatusPages
 import io.ktor.jackson.jackson
-import io.ktor.routing.route
-import io.ktor.routing.routing
 import io.ktor.util.KtorExperimentalAPI
 import org.koin.ktor.ext.Koin
 import org.koin.ktor.ext.inject
@@ -65,11 +64,9 @@ fun Application.module() {
         ErrorHandler().configure(this)
     }
 
-    routing {
-        route("/api/v1") {
-            authRoutes()
-            exampleRoutes()
-        }
+    install(ControllerRegistrar) {
+        register("/api/v1/auth", AuthController())
+        register("/api/v1/auth/examples", ExampleController())
     }
 }
 

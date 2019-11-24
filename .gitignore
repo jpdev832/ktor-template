@@ -7,3 +7,8 @@
 *.iws
 /server/build
 /auth-jwt/build
+/error/build/
+/controller/koin/build/
+/store/build/
+/controller/core/build/
+/store-postgres/build/
